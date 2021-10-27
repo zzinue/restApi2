@@ -1,66 +1,64 @@
-const { request, response } = require("express");
+
 const express = require("express");
 const faker = require("faker");
+const authHandler= require("../middlewares/authHandlers");
+const product = require("../usesCases/products");
 
 const router = express.Router();
 
-router.get("/", (request, response) => {
+//products
+router.get("/", async (request, response, next) => {
   const products = [];
   const { limit } = request.query;
 
-
-
-  for (let index = 0; index < limit; index++) {
-    products.push({
-      name: faker.commerce.productName(),
-      price: parseInt(faker.commerce.price(), 10),
-      image: faker.image.imageUrl(),
-    });
-  }
-
-  if (limit) {
-    // Si tiene limite entonces
-    response.json({
-      ok: true,
-      payload: products,
-    });
-  } else {
-    //Si no tiene limite
-    response.json({
-      ok: false,
-      message: "El límite y la pagina son obligatorios",
-    });
-  }
+  try {
+  const products = await product.get();
+  response.json({
+  ok: true,
+  message: "Done!",
+  payload: {products}, 
+});
+} catch (error){ 
+  next (error);
+}
 });
 
-router.get("/:id", (request, response, next) => {
+
+router.get("/:id", async (request, response, next) => {
+  const {id}= request.params;
+
   try {
-    throw "Error generico";
-    // const { id } = request.params;
-    // response.json({
-    //   id,
-    //   name: "Product 1",
-    //   price: 1000,
-    // });
+    const productById= await product.getById(id);
+    response.json({
+      ok:true,
+      message: "Done!",
+      payload: {productById},
+    });
   } catch (error) {
     next(error);
   }
 });
 
-router.post("/", (request, response) => {
-  const body = request.body;
+// router.use (authHandler); 
 
-  // Logica del negocio
-
-  response.status(201).json({
-    ok: true,
-    message: "Created successfully",
-    payload: {
-      body,
-    },
-  });
+router.post("/", async (request, response, next) => {
+  try {
+      const productData = request.body;
+      const productCreated= await product.create(productData);
+      
+      response.status(201).json({
+        ok:true, 
+        message:"New product created",
+        payload: {
+          product: productCreated,
+        },
+      });
+  }catch (error){
+    next(error);
+ }
 });
 
+// AQUI EMPIEZA LA TAREA
 router.patch("/:id", (request, response) => {
   const { id } = request.params;
   const { name, price } = request.body;
@@ -82,13 +80,19 @@ router.patch("/:id", (request, response) => {
   }
 });
 
-router.delete("/:id", (req, res) => {
-  const { id } = req.params;
-  // Logica para eliminar
-  res.status(202).json({
-    ok: true,
-    message: `Product ${id} deleted successfully`,
-  });
+/* router.delete("/:id",async (request, response,next) => {
+  const { id } = request.params;
+  //const {name, price }=request.body; 
+ try {
+   const deletedById= await product.deleteOne(id);
+   response.json({
+     ok:true, 
+     message: "Done!",
+     payload:{deletedById},
+   });
+ }catch (error){
+   next (error);
+ }
 });
-
+ */
 module.exports = router;

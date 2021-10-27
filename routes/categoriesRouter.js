@@ -1,101 +1,73 @@
-const express = require ("express")
-const router= express.Router ()
-module.exports= router
+const express = require("express");
+const categories= require("../usesCases/categories");
 
+const router = express.Router();
 
-router.get("/categories", (request, response)=>{
-    const categories =[];
-    const { limit } = request.query; 
-  
-    for (let index = 0; index < limit; index++) {
-        categories.push({
-            categories: faker.commerce.department(),
-    });
-};
-    if (limit){
-        response.json({
+// categories:
+router. get ("/", async (request, response, next)=>{
+    const categories1= [];
+    const {limit}= request.query; 
+
+    try { 
+        const categories1= await categories.get (); 
+        response.json ({
             ok:true, 
-            payload: categories,
+            message: "Done!", 
+            payload: {categories1}
         });
-    }else {
-        response.json({
-            ok:false, 
-            message : " numero de categories"
-        }); 
+    }catch (error){
+        next (error);
     }
 });
-router.get("/categories/:categoriesId", (request, response, next) => {
+ 
+
+// getById 
+router.get("/:id", async (request,response, next)=>{
+    const {id}= request.params;
+
     try {
-      throw "Error generico";
-      // const { id } = request.params;
-      // response.json({
-      //   id,
-      //   name: "Product 1",
-      //   price: 1000,
-      // });
-    } catch (error) {
-      next(error);
+        const categoriesById= await categories.getById(id);
+        response.json({
+            ok:true,
+            message: "Done!",
+            payload: {categoriesById},
+        });
+    }catch(error){
+        next(error);
     }
-  });
-//app.get ("/categories/:categoriesId", (request, response)=>{
-       // const {categoriesId}= request.params; 
-      //  response.json({
-        //    categoriesId, 
-            
- //       });
-    
-//});
+});
 
 
+//creating post 
 
+router.post ("/", async (request,response,next)=> {
+    try {
+        const categoriesData= request.body; 
+        const categoriesCreated= await categories.create(categoriesData);
 
-
-
-
-
-
-router.post("/", (request, response) => {
-    const body = request.body;
-  
-    // Logica del negocio
-  
-    response.json({
-      ok: true,
-      message: "Created successfully",
-      payload: {
-        body,
-      },
-    });
-  });
-
-
-  router.patch("/:categoriesId", (request, response) => {
-    const { id } = request.params;
-    const { categories } = request.body;
-  
-    if (id == 99) {
-      response.status(404).json({
-        ok: false,
-        message: "Product not found",
-      });
-    } else {
-      response.status(201).json({
-        ok: true,
-        message: `Product ${id} updated successfully`,
-        payload: {
-          categories,
-        },
-      });
+        response.status(201).json({
+            ok:true,
+            message: "New categorie created",
+            payload: {
+                categories: categoriesCreated,
+            },
+        });
+    }catch(error){
+        next(error);
     }
-  });
-  
-  router.delete("/categories/:categoriesId", (req, res) => {
-    const { id } = req.params;
-    // Logica para eliminar
+});
+
+
+//delete 
+router.delete("/:id", (req,res)=> {
+    const {id}=req.params; 
+    //logica para eliminar
     res.status(202).json({
-      ok: true,
-      message: `category ${id} deleted successfully`,
+        ok:true, 
+        message: `categorie ${id} deleted successfully`,
     });
-  });
-  
-  module.exports = router;
+});
+
+
+
+module.exports = router;
