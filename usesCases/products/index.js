@@ -34,6 +34,14 @@ const create=  async (productData)=> {
 
 }
 
+
+//actualizar los detalles de un producto
+const update= async (productId, productData)=> {
+    const {name, price}= productData
+    return Product.findByIdAndUpdate(productId, productData ).exec();
+
+}
+
 //eliminar un producto 
 
 const del= async (productId)=>{
@@ -41,12 +49,6 @@ const del= async (productId)=>{
 }
 
 
-//actualizar los detalles de un producto
-const update= async (productId, productData)=> {
-    const {name, price}= productData
-    return Product.findByIdAndUpdate(productId, {name, price}).exec();
-
-}
 
 module.exports= {
     get,

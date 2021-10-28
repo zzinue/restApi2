@@ -8,11 +8,10 @@ const router = express.Router();
 
 //products
 router.get("/", async (request, response, next) => {
-  const products = [];
   const { limit } = request.query;
 
   try {
-  const products = await product.get();
+  const products = await product.get(limit);
   response.json({
   ok: true,
   message: "Done!",
@@ -58,41 +57,42 @@ router.post("/", async (request, response, next) => {
  }
 });
 
-// AQUI EMPIEZA LA TAREA
-router.patch("/:id", (request, response) => {
-  const { id } = request.params;
-  const { name, price } = request.body;
+router.patch("/:id", async (request, response, next) => {
+  
+  //const { name, price } = request.body;
 
-  if (id == 99) {
-    response.status(404).json({
-      ok: false,
-      message: "Product not found",
-    });
-  } else {
-    response.status(201).json({
+  try {
+    const { id } = request.params;
+    const productData= request.body;
+    const productUpdate = await product.update(id, productData);
+    response.json({
       ok: true,
-      message: `Product ${id} updated successfully`,
-      payload: {
-        name,
-        price,
-      },
+      message: "Product updated successfully",
+      payload: { 
+        product: productUpdate ,
+       }
     });
+  } catch (error) {
+    next(error);
   }
 });
+ 
 
-/* router.delete("/:id",async (request, response,next) => {
+router.delete("/:id",async (request, response,next) => {
   const { id } = request.params;
-  //const {name, price }=request.body; 
  try {
-   const deletedById= await product.deleteOne(id);
-   response.json({
-     ok:true, 
-     message: "Done!",
-     payload:{deletedById},
+   
+     const deletedProduct= await product.del(id)
+      response.json({
+        ok:true,
+        message: "Product deleted successfully",
+        payload: {
+          product: deletedProduct,
+        }
    });
- }catch (error){
-   next (error);
- }
+   } catch (error){
+    next (error);
+  }
 });
- */
+  
 module.exports = router;

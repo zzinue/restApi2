@@ -29,8 +29,16 @@ const create= async (categoriesData)=> {
     return savedCategories;
 }
 
+// patch or update de categories 
+const update = async (categoriesId, categoriesData)=>{
+    const {name, price, description }= categoriesData
+    return Categories.findByIdAndUpdate(categoriesId, categoriesData).exec();
+
+}
+
 module.exports= {
      get,
      create,
      getById,
+     update,
 }

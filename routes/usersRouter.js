@@ -1,4 +1,5 @@
  const express = require("express");
+const categories = require("../models/categories");
 const user= require("../usesCases/users");
 
 const router = express.Router();
@@ -39,7 +40,23 @@ router.get ("/:id", async(request, response, next)=>{
 });
 
 
-// post 
+// AQUI FALTA EL PATCH DE USERS
+
+/* router.patch ("/:id", async (request, response, next)=>{
+  const {id}= request.params;
+  const userData= request.body; 
+  //const {firstName, lastName, userName, passsword}= request.body;
+  try {
+    const usersUpdate= await user.update(id, userData);
+    response.json({
+      ok:true, 
+      message: "User update successfully",
+      paylaod: {usersUpdate},
+    });
+  } catch (error){
+    next(error);
+  }
+}); */
 
 router.post ("/", async (request, response, next)=> {
   try { 
@@ -58,34 +75,24 @@ router.post ("/", async (request, response, next)=> {
   }
 }); 
 
+//patch de users
+router.patch("/:id", async (request, response, next)=> {
+  try {
+    const {id}= request.params;
+    const userData= request.body;
+    const userUpdate= await user.update(id, userData); 
+    response.json({
+      ok:true,
+      message: "User updated successfully",
+      payload:{
+        user: userUpdate,
+      }
+    })
+  }catch (error){
+    next (error);
+  }
+});
 
-/* /* lo puso Alfred   res.json([
-    {
-      id: 1,
-      username: "alfredoa",
-      firstName: "Alfredo",
-      lastName: "Altamirano",
-    },
-    {
-      id: 2,
-      username: "clauro",
-      firstName: "Claudia",
-      lastName: "Rodrigez",
-    },
-  ]);
- */
-
-/* 
-router.get("/:id", (req, res) => {
-  const {id}=req.params;
-  req.status(200).json({
-    id,
-    username: "alfredoa",
-    firstName: "Alfredo",
-    lastName: "Altamirano",
-  });
-  }); */
-   
 
 module.exports = router;
  

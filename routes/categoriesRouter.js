@@ -58,7 +58,26 @@ router.post ("/", async (request,response,next)=> {
 });
 
 
-//delete 
+//patch de categories
+
+router.patch("/:id", async (request,response, next)=>{
+    try {
+      const {id}= request.params; 
+      const categoriesData= request.body; 
+      const categoriesUpdate= await categories.update(id, categoriesData);
+      response.json ({
+        ok:true,
+        message: "categories updated successfully",
+        payload: {
+          categories: categoriesUpdate,
+        }
+      });
+    } catch (error){
+      next(error);
+    }
+  });
+
+/* //delete 
 router.delete("/:id", (req,res)=> {
     const {id}=req.params; 
     //logica para eliminar
@@ -67,7 +86,7 @@ router.delete("/:id", (req,res)=> {
         message: `categorie ${id} deleted successfully`,
     });
 });
-
+ */
 
 
 module.exports = router;

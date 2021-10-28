@@ -10,7 +10,7 @@ const get= async ()=> {
 
 
 //ver los detalles del usuario por id
-const getUserById= async (userId) => {
+const getById= async (userId) => {
      const user= await User.findById(userId).exec(); 
      return user;
 };
@@ -30,10 +30,18 @@ const create= async (userData) => {
     return savedUser; 
 
 } 
+
+
+//acutalizar con patch los detalles del user 
+const update= async (userId, userData)=>{
+    const {firstName, lastName, userName, password}=userData
+    return User.findByIdAndUpdate(userId, userData).exec();
+    
+}
  
 module.exports= {
     get, 
-    getUserById,
+    getById,
     create,
-    
+    update,
 }
