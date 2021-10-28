@@ -40,23 +40,6 @@ router.get ("/:id", async(request, response, next)=>{
 });
 
 
-// AQUI FALTA EL PATCH DE USERS
-
-/* router.patch ("/:id", async (request, response, next)=>{
-  const {id}= request.params;
-  const userData= request.body; 
-  //const {firstName, lastName, userName, passsword}= request.body;
-  try {
-    const usersUpdate= await user.update(id, userData);
-    response.json({
-      ok:true, 
-      message: "User update successfully",
-      paylaod: {usersUpdate},
-    });
-  } catch (error){
-    next(error);
-  }
-}); */
 
 router.post ("/", async (request, response, next)=> {
   try { 
@@ -91,6 +74,27 @@ router.patch("/:id", async (request, response, next)=> {
   }catch (error){
     next (error);
   }
+});
+
+
+// eliminar usuario 
+
+router.delete("/:id", async (request,response,next)=>{
+
+    const {id}= request.params;
+  try{ 
+    
+  const usersDeleted= await user.del(id)
+  response.json({
+    ok:true, 
+    message: "User deleted successfully",
+    payload: {
+      user: usersDeleted,
+    }
+  });
+ } catch (error){
+   next (error);
+}
 });
 
 

@@ -36,9 +36,18 @@ const update = async (categoriesId, categoriesData)=>{
 
 }
 
+//eliminar categories 
+
+const del= async (categoriesId)=> {
+    return Categories.findByIdAndDelete(categoriesId).exec();
+
+}
+
+
 module.exports= {
      get,
      create,
      getById,
      update,
+     del,
 }

@@ -36,12 +36,21 @@ const create= async (userData) => {
 const update= async (userId, userData)=>{
     const {firstName, lastName, userName, password}=userData
     return User.findByIdAndUpdate(userId, userData).exec();
-    
+
 }
+
+// eliminar un usuario  
+
+const del= async (userId)=> {
+    return User.findByIdAndDelete(userId).exec(); 
+
+}
+
  
 module.exports= {
     get, 
     getById,
     create,
     update,
+    del,
 }

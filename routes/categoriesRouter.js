@@ -47,7 +47,7 @@ router.post ("/", async (request,response,next)=> {
 
         response.status(201).json({
             ok:true,
-            message: "New categorie created",
+            message: "New category created",
             payload: {
                 categories: categoriesCreated,
             },
@@ -77,16 +77,22 @@ router.patch("/:id", async (request,response, next)=>{
     }
   });
 
-/* //delete 
-router.delete("/:id", (req,res)=> {
-    const {id}=req.params; 
-    //logica para eliminar
-    res.status(202).json({
-        ok:true, 
-        message: `categorie ${id} deleted successfully`,
-    });
-});
- */
+ //delete  categories 
+ router.delete("/:id", async (request,response, next)=> {
+     const {id}= request.params; 
+    try {
+         const categoriesDeleted= await categories.del(id); 
+         response.json({
+             ok:true, 
+             message: "category deleted successfylly",
+             payload: {
+                 categories: categoriesDeleted,
+             }
+         })
+    }catch (error){
+        next (error);
+    }
+ });
 
 
 module.exports = router;
